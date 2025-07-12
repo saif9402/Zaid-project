@@ -20,7 +20,7 @@ form.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value.trim();
 
   try {
-    const response = await fetch("https://zaid3.runasp.net/api/Auth", {
+    const response = await fetch("https://zaidrealstate.tryasp.net/api/Auth", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
