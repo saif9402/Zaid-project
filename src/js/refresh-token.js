@@ -1,4 +1,4 @@
-const baseUrl = "https://localhost:7134";
+const baseUrl = "https://zaidrealstate.tryasp.net";
 
 export async function refreshToken() {
   const oldToken = localStorage.getItem("token");
