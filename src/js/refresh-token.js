@@ -11,7 +11,8 @@ export async function refreshToken() {
 
   try {
     const response = await fetch(`${baseUrl}/api/Auth/Refresh`, {
-      method: "GET", // often POST is expected even with no body
+      method: "GET",
+      credentials: "include",
     });
 
     const result = await response.json();
