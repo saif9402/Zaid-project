@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Dashboard - Login</title>
+    <link href="./output.css" rel="stylesheet" />
+  </head>
+  <body class="bg-blue-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <div class="flex justify-center mb-6">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 32 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="text-blue-600"
+        >
+          <path
+            d="M7.99997 29.3333V5.33334C7.99997 4.62609 8.28092 3.94782 8.78102 3.44772C9.28111 2.94762 9.95939 2.66667 10.6666 2.66667H21.3333C22.0405 2.66667 22.7188 2.94762 23.2189 3.44772C23.719 3.94782 24 4.62609 24 5.33334V29.3333H7.99997Z"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M7.99996 16H5.33329C4.62605 16 3.94777 16.281 3.44767 16.781C2.94758 17.2811 2.66663 17.9594 2.66663 18.6667V26.6667C2.66663 27.3739 2.94758 28.0522 3.44767 28.5523C3.94777 29.0524 4.62605 29.3333 5.33329 29.3333H7.99996"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M24 12H26.6666C27.3739 12 28.0522 12.281 28.5523 12.781C29.0524 13.2811 29.3333 13.9594 29.3333 14.6667V26.6667C29.3333 27.3739 29.0524 28.0522 28.5523 28.5523C28.0522 29.0524 27.3739 29.3333 26.6666 29.3333H24"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13.3333 8H18.6666"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13.3333 13.3333H18.6666"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13.3333 18.6667H18.6666"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13.3333 24H18.6666"
+            stroke="currentColor"
+            stroke-width="2.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <h1 class="text-3xl font-bold text-center text-gray-800 mb-3">
+        Welcome Back
+      </h1>
+
+      <p class="text-center text-sm text-gray-500 mb-8">
+        Log in to your real estate dashboard
+      </p>
+
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 placeholder:text-sm"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700"
+            >Password</label
+          >
+          <input
+            type="password"
+            id="password"
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 placeholder-gray-400 placeholder:text-sm"
+            placeholder="••••••••"
+            required
+          />
+          <button
+            type="button"
+            id="togglePassword"
+            class="absolute top-9 right-3 text-gray-500 hover:text-blue-600 transition-colors"
+            aria-label="Toggle password visibility"
+          >
+            <!-- Eye Icon (Visible) -->
+            <svg
+              id="eyeIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+
+            <!-- Eye Off Icon (Hidden), initially hidden -->
+            <svg
+              id="eyeOffIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 013.34-4.693m3.88-2.087A9.96 9.96 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.961 9.961 0 01-1.507 2.568M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 3l18 18"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
+        >
+          Sign In
+        </button>
+      </form>
+    </div>
+    <!-- <script src="js/login.js"></script> -->
+
+    <script>
+      const passwordInput = document.getElementById("password");
+      const togglePassword = document.getElementById("togglePassword");
+      const eyeIcon = document.getElementById("eyeIcon");
+      const eyeOffIcon = document.getElementById("eyeOffIcon");
+
+      togglePassword.addEventListener("click", () => {
+        const isPassword = passwordInput.getAttribute("type") === "password";
+        passwordInput.setAttribute("type", isPassword ? "text" : "password");
+
+        eyeIcon.classList.toggle("hidden", !isPassword);
+        eyeOffIcon.classList.toggle("hidden", isPassword);
+      });
+
+      const form = document.getElementById("loginForm");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        try {
+          const response = await fetch(
+            "https://zaidrealstate.tryasp.net/api/Auth",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, password }),
+            }
+          );
+
+          const result = await response.json();
+
+          if (result.succeeded) {
+            // Store token in localStorage
+            localStorage.setItem("token", result.data.token);
+
+            // Redirect to dashboard page
+            window.location.href = "pages/home.html";
+          } else {
+            alert(
+              "Login failed: " + (result.message || "Invalid credentials.")
+            );
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          alert("An error occurred during login.");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Dashboard</title>
+    <link href="../output.css" rel="stylesheet" />
+  </head>
+  <body class="bg-blue-50 min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md min-h-screen p-4">
+      <div
+        class="flex justify-center items-center text-xl font-bold text-blue-600 mb-10"
+      >
+        RealEstate Admin
+      </div>
+      <nav class="space-y-2">
+        <!-- Active item with shadow -->
+        <a
+          href="home.html"
+          class="flex items-center p-3 rounded-lg bg-blue-50 text-blue-600 shadow-sm font-medium"
+        >
+          <!-- Dashboard Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"
+            />
+          </svg>
+          Dashboard
+        </a>
+
+        <!-- Properties -->
+        <a
+          href="properties.html"
+          class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition"
+        >
+          <!-- Home Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10l9-7 9 7v10a2 2 0 01-2 2h-4a2 2 0 01-2-2V12H9v8a2 2 0 01-2 2H5a2 2 0 01-2-2V10z"
+            />
+          </svg>
+          Properties
+        </a>
+
+        <!-- Messages -->
+        <a
+          href="messages.html"
+          class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition"
+        >
+          <!-- Chat Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M7 8h10M7 12h6m-6 4h8M5 20l-1.447-.724A2 2 0 013 17.382V6a2 2 0 012-2h14a2 2 0 012 2v11.382a2 2 0 01-.553 1.382L19 20H5z"
+            />
+          </svg>
+          Messages
+        </a>
+
+        <!-- Logout -->
+        <a
+          href="#"
+          id="logoutBtn"
+          class="flex items-center p-3 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition"
+        >
+          <!-- Logout Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m4 0a2 2 0 00-4 0m4 0H7"
+            />
+          </svg>
+          Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
+          <p class="text-sm text-gray-500">
+            Welcome back to your real estate admin panel
+          </p>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Total Properties -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <a href="properties.html">
+            <h2 class="text-xl font-semibold text-blue-600">Properties</h2>
+          </a>
+          <p class="text-3xl font-bold mt-2 text-gray-800" id="propertyCount">
+            0
+          </p>
+          <p class="text-sm text-gray-500 mt-1">
+            Total number of listed properties
+          </p>
+        </div>
+
+        <!-- Total Messages -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <a href="messages.html">
+            <h2 class="text-xl font-semibold text-blue-600">Messages</h2>
+          </a>
+          <p class="text-3xl font-bold mt-2 text-gray-800" id="messageCount">
+            24
+          </p>
+          <p class="text-sm text-gray-500 mt-1">Total messages received</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-12 text-sm text-gray-400 text-center">
+        © 2025 RealEstate Admin. All rights reserved.
+      </footer>
+    </main>
+
+    <script src="../js/logout.js"></script>
+    <script type="module">
+      import { refreshToken } from "../js/refresh-token.js";
+
+      const baseUrl = "https://zaidrealstate.tryasp.net";
+      const messageCountEl = document.getElementById("messageCount");
+      const propertyCountEl = document.getElementById("propertyCount");
+
+      async function fetchMessageCount(token) {
+        try {
+          const response = await fetch(
+            `${baseUrl}/api/Messages/GetAllMessages`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const result = await response.json();
+          if (result.succeeded && result.data?.data) {
+            const unreadMessages = result.data.data.filter(
+              (msg) => !msg.isRead
+            );
+            messageCountEl.textContent = unreadMessages.length;
+          } else {
+            messageCountEl.textContent = 0;
+          }
+        } catch (err) {
+          console.error("Failed to fetch messages:", err);
+        }
+      }
+
+      async function fetchPropertyCount() {
+        try {
+          const response = await fetch(
+            `${baseUrl}/api/Property/GetAllProperties`
+          );
+          const result = await response.json();
+
+          if (result.succeeded) {
+            propertyCountEl.textContent = result.data.length || 0;
+          }
+        } catch (err) {
+          console.error("Failed to fetch properties:", err);
+        }
+      }
+
+      async function initDashboard() {
+        const token = await refreshToken();
+        if (token) {
+          fetchMessageCount(token);
+        }
+        fetchPropertyCount();
+      }
+
+      initDashboard();
+    </script>
+  </body>
+</html>

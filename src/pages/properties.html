@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Properties | RealEstate Admin</title>
+    <link href="../output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body class="bg-blue-50 flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md min-h-screen p-4">
+      <div
+        class="flex justify-center items-center text-xl font-bold text-blue-600 mb-10"
+      >
+        RealEstate Admin
+      </div>
+      <nav class="space-y-2">
+        <!-- Active item with shadow -->
+        <a
+          href="home.html"
+          class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition"
+        >
+          <!-- Dashboard Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"
+            />
+          </svg>
+          Dashboard
+        </a>
+
+        <!-- Properties -->
+        <a
+          href="properties.html"
+          class="flex items-center p-3 rounded-lg bg-blue-50 text-blue-600 shadow-sm font-medium"
+        >
+          <!-- Home Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10l9-7 9 7v10a2 2 0 01-2 2h-4a2 2 0 01-2-2V12H9v8a2 2 0 01-2 2H5a2 2 0 01-2-2V10z"
+            />
+          </svg>
+          Properties
+        </a>
+
+        <!-- Messages -->
+        <a
+          href="messages.html"
+          class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition"
+        >
+          <!-- Chat Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M7 8h10M7 12h6m-6 4h8M5 20l-1.447-.724A2 2 0 013 17.382V6a2 2 0 012-2h14a2 2 0 012 2v11.382a2 2 0 01-.553 1.382L19 20H5z"
+            />
+          </svg>
+          Messages
+        </a>
+
+        <!-- Logout -->
+        <a
+          href="#"
+          id="logoutBtn"
+          class="flex items-center p-3 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition"
+        >
+          <!-- Logout Icon -->
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m4 0a2 2 0 00-4 0m4 0H7"
+            />
+          </svg>
+          Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- main section -->
+    <main class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Properties</h2>
+        <button
+          data-modal="open"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
+        >
+          + Add Property
+        </button>
+      </div>
+
+      <!-- Search Field -->
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name..."
+          class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Properties Table -->
+      <div class="overflow-x-auto bg-white shadow rounded-xl">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100 text-gray-700 uppercase tracking-wider">
+            <tr>
+              <th class="px-6 py-3">Name</th>
+              <th class="px-6 py-3">Type</th>
+              <th class="px-6 py-3">Status</th>
+              <th class="px-6 py-3">Price</th>
+              <th class="px-6 py-3">Area</th>
+              <th class="px-6 py-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="propertyTableBody" class="divide-y divide-gray-200">
+            <!-- Data rows will be injected here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-12 text-sm text-gray-400 text-center">
+        © 2025 RealEstate Admin. All rights reserved.
+      </footer>
+    </main>
+
+    <!-- Backdrop -->
+    <div
+      id="addPropertyModal"
+      class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center"
+    >
+      <!-- Modal Container -->
+      <div
+        id="modalBox"
+        class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-8 relative animate-fadeIn space-y-6 overflow-y-auto max-h-[90vh]"
+      >
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800">Add New Property</h2>
+          <button
+            onclick="closeModal()"
+            class="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+          >
+            &times;
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="addPropertyForm" class="grid grid-cols-1 gap-6">
+          <!-- Name + Location -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Name</label>
+              <input
+                title="Name of the Property"
+                type="text"
+                name="name"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Location</label>
+              <input
+                title="Location of the Property"
+                type="text"
+                name="location"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <!-- Type + Status with Dropdowns -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Type</label>
+              <select
+                title="Type of the Property"
+                name="type"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              >
+                <option value="" disabled selected>Select a type</option>
+                <option value="شقة">شقة</option>
+                <option value="أراضي">أراضي</option>
+                <option value="فيلا">فيلا</option>
+                <option value="شاليه">شاليه</option>
+                <option value="عمارة">عمارة</option>
+                <option value="بيت_شخصي">بيت شخصي</option>
+                <option value="مكتب">مكتب</option>
+                <option value="محل">محل</option>
+                <option value="مخزن">مخزن</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-sm text-gray-600">Status</label>
+              <select
+                title="Status of the Property"
+                name="status"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              >
+                <option value="" disabled selected>Select status</option>
+                <option value="إيجار">إيجار</option>
+                <option value="بيع">بيع</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Price + Area -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Price (EGP)</label>
+              <input
+                title="Price of the Property"
+                type="number"
+                name="price"
+                step="0.01"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Area (m²)</label>
+              <input
+                title="Area of the Property"
+                type="number"
+                name="area"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="text-sm text-gray-600">Description</label>
+            <textarea
+              title="Description of the Property"
+              name="description"
+              rows="3"
+              required
+              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+            ></textarea>
+          </div>
+
+          <!-- Main Image -->
+          <div>
+            <label class="text-sm text-gray-600">Main Image</label>
+            <input
+              title="Main Image"
+              type="file"
+              name="mainImage"
+              required
+              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm file:bg-blue-600 file:text-white file:rounded-lg file:border-0 file:px-4 file:py-2 hover:file:bg-blue-700"
+            />
+          </div>
+
+          <!-- Additional Images -->
+          <div>
+            <label class="text-sm text-gray-600">Additional Images</label>
+            <input
+              title="Images for the Property"
+              type="file"
+              name="images"
+              multiple
+              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm file:bg-gray-200 file:text-gray-800 file:rounded-lg file:border-0 file:px-4 file:py-2 hover:file:bg-gray-300"
+            />
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex justify-end gap-4 pt-4">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../js/logout.js"></script>
+    <script>
+      const modal = document.getElementById("addPropertyModal");
+      const modalBox = document.getElementById("modalBox");
+
+      function openModal() {
+        modal.classList.remove("hidden");
+        modalBox.classList.remove("animate-fadeOut");
+        modalBox.classList.add("animate-fadeIn");
+      }
+
+      function closeModal() {
+        modalBox.classList.remove("animate-fadeIn");
+        modalBox.classList.add("animate-fadeOut");
+
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          modalBox.classList.remove("animate-fadeOut"); // reset for next open
+        }, 200); // matches fadeOut duration
+      }
+
+      document
+        .querySelector("[data-modal='open']")
+        .addEventListener("click", openModal);
+    </script>
+  </body>
+</html>
