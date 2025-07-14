@@ -154,14 +154,13 @@
     <script type="module">
       import { refreshToken } from "../js/refresh-token.js";
 
-     
       const messageCountEl = document.getElementById("messageCount");
       const propertyCountEl = document.getElementById("propertyCount");
 
       async function fetchMessageCount(token) {
         try {
           const response = await fetch(
-            `/api/Messages/GetAllMessages`,
+            `/api/Messages/GetAllMessages?IsRead=false`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -185,9 +184,7 @@
 
       async function fetchPropertyCount() {
         try {
-          const response = await fetch(
-            `/api/Property/GetAllProperties`
-          );
+          const response = await fetch(`/api/Property/GetAllProperties`);
           const result = await response.json();
 
           if (result.succeeded) {
