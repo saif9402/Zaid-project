@@ -154,14 +154,14 @@
     <script type="module">
       import { refreshToken } from "../js/refresh-token.js";
 
-      const baseUrl = "https://zaidrealstate.tryasp.net";
+     
       const messageCountEl = document.getElementById("messageCount");
       const propertyCountEl = document.getElementById("propertyCount");
 
       async function fetchMessageCount(token) {
         try {
           const response = await fetch(
-            `${baseUrl}/api/Messages/GetAllMessages`,
+            `/api/Messages/GetAllMessages`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -186,7 +186,7 @@
       async function fetchPropertyCount() {
         try {
           const response = await fetch(
-            `${baseUrl}/api/Property/GetAllProperties`
+            `/api/Property/GetAllProperties`
           );
           const result = await response.json();
 

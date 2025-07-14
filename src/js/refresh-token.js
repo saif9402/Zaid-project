@@ -1,32 +1,24 @@
-const baseUrl = "https://zaidrealstate.tryasp.net";
-
 export async function refreshToken() {
-  const oldToken = localStorage.getItem("token");
-  console.log(oldToken);
-
-  if (!oldToken) {
-    console.warn("No token in localStorage");
-    return null;
-  }
-
+  
   try {
-    const response = await fetch(`${baseUrl}/api/Auth/Refresh`, {
-      method: "GET", // often POST is expected even with no body
-      credentials: "include",
+    const response = await fetch("/api/Auth/Refresh", {
+      method: "GET",
+      credentials: "include"   // ← ensures your HttpOnly cookie is sent
     });
 
     const result = await response.json();
-    console.log(result);
+    console.log("refresh result:", result);
 
     if (result.succeeded) {
+      // store the new access token from the body
       localStorage.setItem("token", result.data.token);
       return result.data.token;
     } else {
-      console.error("Token refresh failed:", result.message || result);
+      console.error("Token refresh failed:", result.message);
       return null;
     }
-  } catch (error) {
-    console.error("Token refresh error:", error);
+  } catch (err) {
+    console.error("Token refresh error:", err);
     return null;
   }
 }
