@@ -20,8 +20,9 @@ form.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value.trim();
 
   try {
-    const response = await fetch("https://zaidrealstate.tryasp.net/api/Auth", {
+    const response = await fetch("/api/Auth", {
       method: "POST",
+      credentials: "include",        // ← ADDED: include cookies on login
       headers: {
         "Content-Type": "application/json",
       },
@@ -44,3 +45,4 @@ form.addEventListener("submit", async (e) => {
     alert("An error occurred during login.");
   }
 });
+
