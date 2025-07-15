@@ -372,10 +372,11 @@
         maxPrice = "",
         minArea = "",
         maxArea = "",
-        sort = [], // NEW: array like ["price:asc"]
+        sort = [], // Get sorting parameters like ["price:asc"]
       } = {}) {
         const params = new URLSearchParams();
 
+        // Append all query params
         if (pageNumber) params.append("PageNumber", pageNumber);
         if (pageSize) params.append("PageSize", pageSize);
         if (search) params.append("Search", search);
@@ -387,9 +388,9 @@
         if (minArea) params.append("MinArea", minArea);
         if (maxArea) params.append("MaxArea", maxArea);
 
-        // NEW: Add sort strings like "price:asc"
+        // Add sort query (Price or Area sorting)
         if (Array.isArray(sort) && sort.length) {
-          sort.forEach((s) => params.append("Sort", s));
+          sort.forEach((s) => params.append("Sort", s)); // Example: "price:asc" or "area:desc"
         }
 
         const response = await fetch(
@@ -397,7 +398,6 @@
         );
         const result = await response.json();
         return result.data;
-        console.log(params.toString());
       }
 
       function renderProperties(properties) {
@@ -457,12 +457,13 @@
         const status = document.getElementById("sortStatus").value;
         const location = document.getElementById("sortLocation").value;
 
+        // Make sure to pass the 'sort' parameter to the API request
         const properties = await fetchProperties({
           search,
           type,
           status,
           location,
-          sort: currentSort,
+          sort: currentSort, // Pass the current sort array here
         });
 
         renderProperties(properties);
@@ -478,11 +479,13 @@
 
       function toggleSort(field) {
         const existing = currentSort.find((s) => s.startsWith(field + ":"));
+
+        // If sort already exists for the field, toggle between 'asc' and 'desc'
         if (existing) {
           const newOrder = existing.endsWith("asc") ? "desc" : "asc";
-          currentSort = [`${field}:${newOrder}`];
+          currentSort = [`${field}:${newOrder}`]; // Overwrite the previous sort value
         } else {
-          currentSort = [`${field}:asc`];
+          currentSort = [`${field}:asc`]; // Default to 'asc' if no sort exists
         }
 
         updateSortIcons();
@@ -493,19 +496,22 @@
         const priceIcon = document.getElementById("priceSortIcon");
         const areaIcon = document.getElementById("areaSortIcon");
 
+        // Get the sorting direction for price
         const priceSort = currentSort.find((s) => s.startsWith("price:"));
         const areaSort = currentSort.find((s) => s.startsWith("area:"));
 
+        // Update icons for price and area columns based on sorting
         priceIcon.textContent = priceSort
           ? priceSort.endsWith("asc")
             ? "▲"
             : "▼"
-          : "⇅";
+          : "⇅"; // Default to ⇅ if no sort
+
         areaIcon.textContent = areaSort
           ? areaSort.endsWith("asc")
             ? "▲"
             : "▼"
-          : "⇅";
+          : "⇅"; // Default to ⇅ if no sort
       }
 
       // Setup event listeners
