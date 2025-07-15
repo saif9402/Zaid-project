@@ -357,31 +357,25 @@
         minArea = "",
         maxArea = "",
       } = {}) {
-        const url = new URL("/Property/GetAllProperties");
-        const params = {
-          PageNumber: pageNumber,
-          PageSize: pageSize,
-          Search: search,
-          Type: type,
-          Status: status,
-          Location: location,
-          MinPrice: minPrice,
-          MaxPrice: maxPrice,
-          MinArea: minArea,
-          MaxArea: maxArea,
-        };
+        const params = new URLSearchParams();
 
-        Object.keys(params).forEach((key) => {
-          if (params[key] !== "") {
-            url.searchParams.append(key, params[key]);
-          }
-        });
+        if (pageNumber) params.append("PageNumber", pageNumber);
+        if (pageSize) params.append("PageSize", pageSize);
+        if (search) params.append("Search", search);
+        if (type) params.append("Type", type);
+        if (status) params.append("Status", status);
+        if (location) params.append("Location", location);
+        if (minPrice) params.append("MinPrice", minPrice);
+        if (maxPrice) params.append("MaxPrice", maxPrice);
+        if (minArea) params.append("MinArea", minArea);
+        if (maxArea) params.append("MaxArea", maxArea);
 
-        const response = await fetch(url);
+        const response = await fetch(
+          `/api/Property/GetAllProperties?${params.toString()}`
+        );
         const result = await response.json();
         return result.data;
       }
-
       const propertyTableBody = document.getElementById("propertyTableBody");
 
       function renderProperties(properties) {
