@@ -388,7 +388,9 @@
         if (maxArea) params.append("MaxArea", maxArea);
 
         // NEW: Add sort strings like "price:asc"
-        sort.forEach((s) => params.append("Sort", s));
+        if (Array.isArray(sort) && sort.length) {
+          sort.forEach((s) => params.append("Sort", s));
+        }
 
         const response = await fetch(
           `/api/Property/GetAllProperties?${params.toString()}`
@@ -519,6 +521,7 @@
       document
         .getElementById("sortLocation")
         .addEventListener("change", applyFilters);
+      console.log(params.toString());
     </script>
   </body>
 </html>
