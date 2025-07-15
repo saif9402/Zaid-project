@@ -357,9 +357,7 @@
         minArea = "",
         maxArea = "",
       } = {}) {
-        const url = new URL(
-          "https://zaidrealstate.tryasp.net/api/Property/GetAllProperties"
-        );
+        const url = new URL("/api/Property/GetAllProperties");
         const params = {
           PageNumber: pageNumber,
           PageSize: pageSize,
