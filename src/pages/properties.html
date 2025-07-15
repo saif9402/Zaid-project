@@ -361,6 +361,23 @@
 
       const propertyTableBody = document.getElementById("propertyTableBody");
 
+      // Event listener to open the modal
+      const addPropertyButton = document.querySelector('[data-modal="open"]');
+      const modal = document.getElementById("addPropertyModal");
+      const closeModalButton = modal.querySelector(".text-gray-400");
+
+      addPropertyButton.addEventListener("click", function () {
+        modal.classList.remove("hidden"); // Show the modal
+      });
+
+      // Function to close the modal
+      function closeModal() {
+        modal.classList.add("hidden"); // Hide the modal
+      }
+
+      // Event listener to close the modal when the close button is clicked
+      closeModalButton.addEventListener("click", closeModal);
+
       async function fetchProperties({
         pageNumber = 1,
         pageSize = 10,
@@ -372,7 +389,7 @@
         maxPrice = "",
         minArea = "",
         maxArea = "",
-        sort = [], // Get sorting parameters like ["price:asc"]
+        sort = [],
       } = {}) {
         const params = new URLSearchParams();
 
@@ -388,9 +405,9 @@
         if (minArea) params.append("MinArea", minArea);
         if (maxArea) params.append("MaxArea", maxArea);
 
-        // Add sort query (Price or Area sorting)
+        // Add sort query
         if (Array.isArray(sort) && sort.length) {
-          sort.forEach((s) => params.append("Sort", s)); // Example: "price:asc" or "area:desc"
+          sort.forEach((s) => params.append("Sort", s));
         }
 
         const response = await fetch(
@@ -400,136 +417,7 @@
         return result.data;
       }
 
-      function renderProperties(properties) {
-        propertyTableBody.innerHTML = "";
-        properties.forEach((property) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-                  <td class="px-6 py-4 whitespace-nowrap">${property.name}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">${property.type}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">${property.status}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">${property.location}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">${property.price} EGP</td>
-                  <td class="px-6 py-4 whitespace-nowrap">${property.area} m²</td>
-                  <td class="px-6 py-4 text-center">
-                    <button class="text-blue-500 hover:underline">Edit</button>
-                  </td>
-                `;
-          propertyTableBody.appendChild(row);
-        });
-      }
-
-      function populateDropdowns(properties) {
-        const typeSet = new Set();
-        const statusSet = new Set();
-        const locationSet = new Set();
-
-        properties.forEach((p) => {
-          if (p.type) typeSet.add(p.type);
-          if (p.status) statusSet.add(p.status);
-          if (p.location) locationSet.add(p.location);
-        });
-
-        populateSelect("sortType", Array.from(typeSet));
-        populateSelect("sortStatus", Array.from(statusSet));
-        populateSelect("sortLocation", Array.from(locationSet));
-      }
-
-      function populateSelect(id, items) {
-        const select = document.getElementById(id);
-        const currentValue = select.value;
-        select.innerHTML = `<option value="">${select.id.replace(
-          "sort",
-          ""
-        )}</option>`;
-        items.forEach((item) => {
-          const option = document.createElement("option");
-          option.value = item;
-          option.textContent = item;
-          select.appendChild(option);
-        });
-        select.value = currentValue; // preserve user selection if possible
-      }
-
-      async function applyFilters() {
-        const search = document.getElementById("searchInput").value;
-        const type = document.getElementById("sortType").value;
-        const status = document.getElementById("sortStatus").value;
-        const location = document.getElementById("sortLocation").value;
-
-        // Make sure to pass the 'sort' parameter to the API request
-        const properties = await fetchProperties({
-          search,
-          type,
-          status,
-          location,
-          sort: currentSort, // Pass the current sort array here
-        });
-
-        renderProperties(properties);
-
-        // Populate dropdowns only if this is the first time
-        if (!document.getElementById("sortType").dataset.populated) {
-          populateDropdowns(properties);
-          document.getElementById("sortType").dataset.populated = true;
-          document.getElementById("sortStatus").dataset.populated = true;
-          document.getElementById("sortLocation").dataset.populated = true;
-        }
-      }
-
-      function toggleSort(field) {
-        const existing = currentSort.find((s) => s.startsWith(field + ":"));
-
-        // If sort already exists for the field, toggle between 'asc' and 'desc'
-        if (existing) {
-          const newOrder = existing.endsWith("asc") ? "desc" : "asc";
-          currentSort = [`${field}:${newOrder}`]; // Overwrite the previous sort value
-        } else {
-          currentSort = [`${field}:asc`]; // Default to 'asc' if no sort exists
-        }
-
-        updateSortIcons();
-        applyFilters();
-      }
-
-      function updateSortIcons() {
-        const priceIcon = document.getElementById("priceSortIcon");
-        const areaIcon = document.getElementById("areaSortIcon");
-
-        // Get the sorting direction for price
-        const priceSort = currentSort.find((s) => s.startsWith("price:"));
-        const areaSort = currentSort.find((s) => s.startsWith("area:"));
-
-        // Update icons for price and area columns based on sorting
-        priceIcon.textContent = priceSort
-          ? priceSort.endsWith("asc")
-            ? "▲"
-            : "▼"
-          : "⇅"; // Default to ⇅ if no sort
-
-        areaIcon.textContent = areaSort
-          ? areaSort.endsWith("asc")
-            ? "▲"
-            : "▼"
-          : "⇅"; // Default to ⇅ if no sort
-      }
-
-      // Setup event listeners
-      document.addEventListener("DOMContentLoaded", applyFilters);
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", applyFilters);
-      document
-        .getElementById("sortType")
-        .addEventListener("change", applyFilters);
-      document
-        .getElementById("sortStatus")
-        .addEventListener("change", applyFilters);
-      document
-        .getElementById("sortLocation")
-        .addEventListener("change", applyFilters);
-
-      // Add event listener to the form
+      // Setup event listener for form submission
       document
         .getElementById("addPropertyForm")
         .addEventListener("submit", async function (event) {
@@ -581,7 +469,7 @@
             formData.append("images", additionalImages[i]);
           }
 
-          // Send the data to the API (you mentioned the endpoint, so we are directly using it)
+          // Send the data to the API
           try {
             const response = await fetch("/api/Property/AddProperty", {
               method: "POST",
@@ -593,7 +481,7 @@
               alert("Property added successfully!");
               // Optionally, you could reset the form or close the modal
               document.getElementById("addPropertyForm").reset();
-              closeModal(); // Assuming you want to close the modal after submission
+              closeModal(); // Close the modal after submission
             } else {
               alert("Failed to add property. Please try again.");
             }
