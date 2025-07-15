@@ -153,6 +153,11 @@
           </button>
         </div>
 
+        <div
+          id="errorMessage"
+          class="hidden text-sm text-red-500 bg-red-100 p-3 rounded-md"
+        ></div>
+
         <button
           type="submit"
           class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
@@ -184,6 +189,11 @@
 
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
+        const errorMessage = document.getElementById("errorMessage");
+
+        // Hide previous message
+        errorMessage.classList.add("hidden");
+        errorMessage.textContent = "";
 
         try {
           const response = await fetch("/api/Auth", {
@@ -198,19 +208,16 @@
           const result = await response.json();
 
           if (result.succeeded) {
-            // Store token in localStorage
             localStorage.setItem("token", result.data.token);
-
-            // Redirect to dashboard page
             window.location.href = "pages/home.html";
           } else {
-            alert(
-              "Login failed: " + (result.message || "Invalid credentials.")
-            );
+            errorMessage.textContent = result.message || "Invalid credentials.";
+            errorMessage.classList.remove("hidden");
           }
         } catch (error) {
           console.error("Login error:", error);
-          alert("An error occurred during login.");
+          errorMessage.textContent = "An unexpected error occurred.";
+          errorMessage.classList.remove("hidden");
         }
       });
     </script>
