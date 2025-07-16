@@ -175,7 +175,9 @@
     </div>
 
     <script src="../js/logout.js"></script>
-    <script>
+    <script type="module">
+      import { getValidAccessToken } from "../js/refresh-token.js";
+
       const tableBody = document.getElementById("messageTable");
       const searchInput = document.querySelector('input[type="text"]');
 
@@ -184,6 +186,8 @@
       let searchQuery = "";
 
       async function fetchMessages() {
+        const token = await getValidAccessToken();
+
         const url = new URL(
           "/api/Messages/GetAllMessages",
           window.location.origin
@@ -191,10 +195,15 @@
         url.searchParams.append("PageNumber", currentPage);
         url.searchParams.append("PageSize", pageSize);
         if (searchQuery) url.searchParams.append("Search", searchQuery);
-        url.searchParams.append("Sort", "createdAt desc"); // Sort by newest first
+        url.searchParams.append("Sort", "createdAt desc");
 
         try {
-          const response = await fetch(url);
+          const response = await fetch(url, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
           const result = await response.json();
           renderMessages(result.data.data);
         } catch (error) {
