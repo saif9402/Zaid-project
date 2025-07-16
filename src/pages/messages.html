@@ -165,7 +165,7 @@
         </div>
         <div class="mt-6 flex justify-end">
           <button
-            onclick="closeModal()"
+            id="closeModalBtn"
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Close
@@ -324,10 +324,20 @@
         }, 300); // Match Tailwind transition duration
       }
 
-      // Optional: close on Escape
+      // close on Escape
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal();
       });
+
+      document.getElementById("messageModal").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) {
+          closeModal();
+        }
+      });
+
+      document
+        .getElementById("closeModalBtn")
+        .addEventListener("click", closeModal);
     </script>
   </body>
 </html>
