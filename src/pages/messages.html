@@ -127,11 +127,10 @@
         <table class="min-w-full text-sm text-left">
           <thead class="bg-gray-100 text-gray-700 uppercase tracking-wider">
             <tr>
-              <th class="px-6 py-3">Name</th>
-              <th class="px-6 py-3">Type</th>
-              <th class="px-6 py-3">Status</th>
-              <th class="px-6 py-3">Price</th>
-              <th class="px-6 py-3">Area</th>
+              <th class="px-6 py-3">From</th>
+              <th class="px-6 py-3">Body</th>
+              <th class="px-6 py-3">Date</th>
+
               <th class="px-6 py-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -140,13 +139,179 @@
           </tbody>
         </table>
       </div>
-
-      <!-- Footer -->
-      <footer class="mt-12 text-sm text-gray-400 text-center">
-        © 2025 RealEstate Admin. All rights reserved.
-      </footer>
     </main>
 
+    <!-- Modal -->
+    <div
+      id="messageModal"
+      class="fixed inset-0 bg-black bg-opacity-30 hidden items-center justify-center z-50 transition-opacity"
+    >
+      <div
+        class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 transform scale-95 opacity-0 transition duration-300"
+        id="modalContent"
+      >
+        <h3 class="text-xl font-semibold mb-4 text-blue-600">
+          Message Details
+        </h3>
+        <div class="space-y-2 text-gray-700 text-sm">
+          <div><strong>From:</strong> <span id="modalSender"></span></div>
+          <div><strong>Email:</strong> <span id="modalEmail"></span></div>
+          <div><strong>Phone:</strong> <span id="modalPhone"></span></div>
+          <div><strong>Date:</strong> <span id="modalDate"></span></div>
+          <div>
+            <strong>Body:</strong>
+            <p class="mt-1 text-gray-800" id="modalBody"></p>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button
+            onclick="closeModal()"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="../js/logout.js"></script>
+    <script>
+      const tableBody = document.getElementById("messageTable");
+      const searchInput = document.querySelector('input[type="text"]');
+
+      let currentPage = 1;
+      const pageSize = 10;
+      let searchQuery = "";
+
+      async function fetchMessages() {
+        const url = new URL(
+          "/api/Messages/GetAllMessages",
+          window.location.origin
+        );
+        url.searchParams.append("PageNumber", currentPage);
+        url.searchParams.append("PageSize", pageSize);
+        if (searchQuery) url.searchParams.append("Search", searchQuery);
+        url.searchParams.append("Sort", "createdAt desc"); // Sort by newest first
+
+        try {
+          const response = await fetch(url);
+          const result = await response.json();
+          renderMessages(result.data.data);
+        } catch (error) {
+          console.error("Failed to fetch messages:", error);
+        }
+      }
+
+      function renderMessages(messages) {
+        tableBody.innerHTML = "";
+        messages.forEach((msg) => {
+          const tr = document.createElement("tr");
+          tr.className = msg.isRead
+            ? "bg-white cursor-pointer"
+            : "bg-blue-50 font-semibold cursor-pointer";
+
+          tr.innerHTML = `
+            <td class="px-6 py-4">${
+              msg.senderName
+            }<br/><small class="text-xs text-gray-500">${
+            msg.senderEmail
+          }</small></td>
+            <td class="px-6 py-4 truncate max-w-xs">${msg.body}</td>
+            <td class="px-6 py-4">${new Date(
+              msg.createdAt
+            ).toLocaleString()}</td>
+            <td class="px-6 py-4 text-center"><span class="text-blue-600 hover:underline">View</span></td>
+          `;
+
+          tr.addEventListener("click", () => openModal(msg));
+          tableBody.appendChild(tr);
+        });
+      }
+
+      searchInput.addEventListener(
+        "input",
+        debounce(() => {
+          searchQuery = searchInput.value.trim();
+          currentPage = 1;
+          fetchMessages();
+        }, 300)
+      );
+
+      // Debounce helper
+      function debounce(func, wait) {
+        let timeout;
+        return (...args) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+      }
+
+      // Pagination Controls (You can style and position these however you want)
+      const pagination = document.createElement("div");
+      pagination.className = "flex justify-center mt-4 gap-2";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "Previous";
+      prevBtn.className =
+        "px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50";
+      prevBtn.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          fetchMessages();
+        }
+      };
+
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "Next";
+      nextBtn.className =
+        "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600";
+      nextBtn.onclick = () => {
+        currentPage++;
+        fetchMessages();
+      };
+
+      pagination.appendChild(prevBtn);
+      pagination.appendChild(nextBtn);
+      document.querySelector("main").appendChild(pagination);
+
+      // Initial fetch
+      fetchMessages();
+
+      function openModal(message) {
+        document.getElementById("modalSender").textContent = message.senderName;
+        document.getElementById("modalEmail").textContent = message.senderEmail;
+        document.getElementById("modalPhone").textContent =
+          message.phoneNumber || "N/A";
+        document.getElementById("modalDate").textContent = new Date(
+          message.createdAt
+        ).toLocaleString();
+        document.getElementById("modalBody").textContent = message.body;
+
+        const modal = document.getElementById("messageModal");
+        const content = document.getElementById("modalContent");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.add("flex");
+          content.classList.remove("opacity-0", "scale-95");
+          content.classList.add("opacity-100", "scale-100");
+        }, 10);
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("messageModal");
+        const content = document.getElementById("modalContent");
+        content.classList.remove("opacity-100", "scale-100");
+        content.classList.add("opacity-0", "scale-95");
+        setTimeout(() => {
+          modal.classList.remove("flex");
+          modal.classList.add("hidden");
+        }, 200);
+      }
+
+      // Optional: close on Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    </script>
   </body>
 </html>
