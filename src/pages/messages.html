@@ -176,7 +176,7 @@
 
     <script src="../js/logout.js"></script>
     <script type="module">
-      import { getValidAccessToken } from "../js/refresh-token.js";
+      import { refreshToken } from "../js/refresh-token.js";
 
       const tableBody = document.getElementById("messageTable");
       const searchInput = document.querySelector('input[type="text"]');
@@ -186,7 +186,7 @@
       let searchQuery = "";
 
       async function fetchMessages() {
-        const token = await getValidAccessToken();
+        const token = await refreshToken();
 
         const url = new URL(
           "/api/Messages/GetAllMessages",
