@@ -195,7 +195,7 @@
         url.searchParams.append("PageNumber", currentPage);
         url.searchParams.append("PageSize", pageSize);
         if (searchQuery) url.searchParams.append("Search", searchQuery);
-        url.searchParams.append("Sort", "date:asc");
+        url.searchParams.append("Sort", "date:desc");
 
         try {
           const response = await fetch(url, {
