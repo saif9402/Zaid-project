@@ -287,6 +287,10 @@
       fetchMessages();
 
       function openModal(message) {
+        const modal = document.getElementById("messageModal");
+        const content = document.getElementById("modalContent");
+
+        // Fill content
         document.getElementById("modalSender").textContent = message.senderName;
         document.getElementById("modalEmail").textContent = message.senderEmail;
         document.getElementById("modalPhone").textContent =
@@ -296,25 +300,28 @@
         ).toLocaleString();
         document.getElementById("modalBody").textContent = message.body;
 
-        const modal = document.getElementById("messageModal");
-        const content = document.getElementById("modalContent");
+        // Show modal with animation
         modal.classList.remove("hidden");
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           modal.classList.add("flex");
           content.classList.remove("opacity-0", "scale-95");
           content.classList.add("opacity-100", "scale-100");
-        }, 10);
+        });
       }
 
       function closeModal() {
         const modal = document.getElementById("messageModal");
         const content = document.getElementById("modalContent");
+
+        // Animate out
         content.classList.remove("opacity-100", "scale-100");
         content.classList.add("opacity-0", "scale-95");
+
+        // Wait for animation to complete
         setTimeout(() => {
           modal.classList.remove("flex");
           modal.classList.add("hidden");
-        }, 200);
+        }, 300); // Match Tailwind transition duration
       }
 
       // Optional: close on Escape
