@@ -771,13 +771,6 @@
       }
     }
   }
-  .hover\:underline {
-    &:hover {
-      @media (hover: hover) {
-        text-decoration-line: underline;
-      }
-    }
-  }
   .hover\:file\:bg-blue-700 {
     &:hover {
       @media (hover: hover) {
