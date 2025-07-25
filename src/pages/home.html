@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real Estate Dashboard</title>
     <link href="../output.css" rel="stylesheet" />
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "../index.html"; // or just "index.html" if in root
+      }
+    </script>
   </head>
   <body class="bg-blue-50 min-h-screen flex">
     <!-- Sidebar -->

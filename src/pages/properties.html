@@ -6,6 +6,12 @@
     <title>Properties | RealEstate Admin</title>
     <link href="../output.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/style.css" />
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "../index.html"; // or just "index.html" if in root
+      }
+    </script>
   </head>
   <body class="bg-blue-50 flex min-h-screen">
     <!-- Sidebar -->
