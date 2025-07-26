@@ -145,12 +145,13 @@
           </tbody>
         </table>
       </div>
+      <div id="paginationControls" class="mt-6"></div>
     </main>
 
     <!-- Modal -->
     <div
       id="messageModal"
-      class="fixed inset-0 bg-black/30 bg-opacity-30 backdrop-blur-sm hidden items-center justify-center z-50 transition-opacity"
+      class="fixed inset-0 bg-black/60 bg-opacity-30 backdrop-blur-sm hidden items-center justify-center z-50 transition-opacity"
     >
       <div
         class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 transform scale-95 opacity-0 transition duration-300"
@@ -187,6 +188,7 @@
       const tableBody = document.getElementById("messageTable");
       const searchInput = document.querySelector('input[type="text"]');
 
+      let totalPages = 1;
       let currentPage = 1;
       const pageSize = 10;
       let searchQuery = "";
@@ -211,7 +213,13 @@
           });
 
           const result = await response.json();
-          renderMessages(result.data.data);
+          const messages = result.data.data;
+          const count = result.data.count;
+          const pageSize = result.data.pageSize;
+          totalPages = Math.ceil(count / pageSize); // total number of pages
+
+          renderMessages(messages);
+          renderPagination();
         } catch (error) {
           console.error("Failed to fetch messages:", error);
         }
@@ -310,6 +318,71 @@
           console.error("Error deleting message:", error);
           alert("An error occurred while deleting the message.");
         }
+      }
+
+      function renderPagination() {
+        const pagination = document.getElementById("paginationControls");
+        pagination.innerHTML = "";
+
+        if (totalPages <= 1) return; // Hide pagination if only one page
+
+        const wrapper = document.createElement("div");
+        wrapper.className =
+          "flex justify-center items-center gap-2 mt-6 flex-wrap";
+
+        const createButton = (text, isDisabled, onClick, isActive = false) => {
+          const btn = document.createElement("button");
+          btn.textContent = text;
+          btn.className = `px-3 py-1 rounded text-sm border ${
+            isActive
+              ? "bg-blue-500 text-white border-blue-600"
+              : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+          } ${
+            isDisabled ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"
+          }`;
+          btn.disabled = isDisabled;
+          if (!isDisabled) btn.addEventListener("click", onClick);
+          return btn;
+        };
+
+        wrapper.appendChild(
+          createButton("«", currentPage === 1, () => {
+            currentPage--;
+            fetchMessages();
+          })
+        );
+
+        // Show 5 pages max (windowed navigation)
+        const windowSize = 5;
+        let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+        let end = Math.min(totalPages, start + windowSize - 1);
+
+        if (end - start < windowSize - 1) {
+          start = Math.max(1, end - windowSize + 1);
+        }
+
+        for (let i = start; i <= end; i++) {
+          wrapper.appendChild(
+            createButton(
+              i,
+              false,
+              () => {
+                currentPage = i;
+                fetchMessages();
+              },
+              currentPage === i
+            )
+          );
+        }
+
+        wrapper.appendChild(
+          createButton("»", currentPage === totalPages, () => {
+            currentPage++;
+            fetchMessages();
+          })
+        );
+
+        pagination.appendChild(wrapper);
       }
 
       searchInput.addEventListener(
