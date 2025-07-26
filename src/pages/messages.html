@@ -226,6 +226,17 @@
       }
 
       function renderMessages(messages) {
+        if (messages.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" class="text-center py-6 text-gray-500">
+                No messages found.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
         tableBody.innerHTML = "";
         messages.forEach((msg) => {
           const tr = document.createElement("tr");
@@ -346,11 +357,22 @@
         };
 
         wrapper.appendChild(
-          createButton("«", currentPage === 1, () => {
+          createButton("»", currentPage >= totalPages, () => {
+            currentPage++;
+            fetchMessages();
+          })
+        );
+        wrapper.appendChild(
+          createButton("«", currentPage <= 1, () => {
             currentPage--;
             fetchMessages();
           })
         );
+
+        const pageInfo = document.createElement("span");
+        pageInfo.className = "text-sm text-gray-500 ml-4";
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        wrapper.appendChild(pageInfo);
 
         // Show 5 pages max (windowed navigation)
         const windowSize = 5;
@@ -402,34 +424,6 @@
           timeout = setTimeout(() => func.apply(this, args), wait);
         };
       }
-
-      // Pagination Controls (You can style and position these however you want)
-      const pagination = document.createElement("div");
-      pagination.className = "flex justify-center mt-4 gap-2";
-
-      const prevBtn = document.createElement("button");
-      prevBtn.textContent = "Previous";
-      prevBtn.className =
-        "px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50";
-      prevBtn.onclick = () => {
-        if (currentPage > 1) {
-          currentPage--;
-          fetchMessages();
-        }
-      };
-
-      const nextBtn = document.createElement("button");
-      nextBtn.textContent = "Next";
-      nextBtn.className =
-        "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600";
-      nextBtn.onclick = () => {
-        currentPage++;
-        fetchMessages();
-      };
-
-      pagination.appendChild(prevBtn);
-      pagination.appendChild(nextBtn);
-      document.querySelector("main").appendChild(pagination);
 
       // Initial fetch
       fetchMessages();
