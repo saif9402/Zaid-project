@@ -206,6 +206,8 @@
         url.searchParams.append("Sort", "date:desc");
 
         try {
+          console.log({ currentPage, pageSize });
+
           const response = await fetch(url, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -215,8 +217,8 @@
           const result = await response.json();
           const messages = result.data.data;
           const count = result.data.count;
-          const pageSize = result.data.pageSize;
-          totalPages = Math.ceil(count / pageSize); // total number of pages
+          const actualPageSize = result.data.pageSize;
+          totalPages = Math.ceil(count / actualPageSize);
 
           renderMessages(messages);
           renderPagination();
