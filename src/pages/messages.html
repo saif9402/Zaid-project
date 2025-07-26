@@ -226,28 +226,34 @@
             : "bg-blue-50 font-semibold cursor-pointer";
 
           tr.innerHTML = `
-            <td class="px-6 py-4">${
-              msg.senderName
-            }<br/><small class="text-xs text-gray-500">${
-            msg.senderEmail
-          }</small></td>
-            <td class="px-6 py-4 truncate max-w-xs">${msg.body}</td>
-            <td class="px-6 py-4">${new Date(
-              msg.createdAt
-            ).toLocaleString()}</td>
-            <td class="px-6 py-4 text-center">
-            <button title="Delete"
-                onclick="deleteMessage(${msg.id})"
-                class="p-2 rounded-full hover:bg-red-100 text-red-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            
+              <td class="px-6 py-4">
+                ${msg.senderName}<br/>
+                <small class="text-xs text-gray-500">${msg.senderEmail}</small>
               </td>
-          `;
+              <td class="px-6 py-4 truncate max-w-xs">${msg.body}</td>
+              <td class="px-6 py-4">${new Date(
+                msg.createdAt
+              ).toLocaleString()}</td>
+              <td class="px-6 py-4 text-center">
+                <button title="Delete"
+                  class="delete-btn p-2 rounded-full hover:bg-red-100 text-red-600 transition"
+                  data-id="${msg.id}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </td>
+            `;
+
+          // Prevent delete button from opening modal
+          const deleteBtn = tr.querySelector(".delete-btn");
+          deleteBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const id = deleteBtn.getAttribute("data-id");
+            deleteMessage(id);
+          });
 
           tr.addEventListener("click", () => openModal(msg));
           tableBody.appendChild(tr);
