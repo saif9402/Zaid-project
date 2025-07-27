@@ -568,6 +568,15 @@
         const pagination = document.getElementById("paginationControls");
         pagination.innerHTML = "";
 
+        if (totalPages <= 1) {
+          // Optional: show just "Page 1 of 1"
+          const info = document.createElement("div");
+          info.className = "text-sm text-gray-500 text-center mt-4";
+          info.textContent = `Page 1 of 1`;
+          pagination.appendChild(info);
+          return;
+        }
+
         const wrapper = document.createElement("div");
         wrapper.className =
           "flex justify-center items-center gap-2 mt-6 flex-wrap";
