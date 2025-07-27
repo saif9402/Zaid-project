@@ -708,11 +708,11 @@
         });
 
         renderProperties(result);
-        totalPages = Math.ceil(result.count / pageSize);
+        totalPages = Math.ceil(result.length / pageSize); // Update this line if needed
         renderPagination();
 
         if (!document.getElementById("sortType").dataset.populated) {
-          populateDropdowns(result.data);
+          populateDropdowns(result); // ✅ FIXED
           document.getElementById("sortType").dataset.populated = true;
           document.getElementById("sortStatus").dataset.populated = true;
           document.getElementById("sortLocation").dataset.populated = true;
