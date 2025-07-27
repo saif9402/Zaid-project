@@ -703,6 +703,15 @@
       const editModalBox = document.getElementById("editModalBox");
       const editForm = document.getElementById("editPropertyForm");
 
+      function generateSelectOptions(selectedValue, options) {
+        return options
+          .map((option) => {
+            const selected = option === selectedValue ? "selected" : "";
+            return `<option value="${option}" ${selected}>${option}</option>`;
+          })
+          .join("");
+      }
+
       function openEditModal(property) {
         editModal.classList.remove("hidden");
         editModalBox.classList.remove("animate-fadeOut");
@@ -719,7 +728,9 @@
             </div>
             <div>
               <label class="text-sm text-gray-600">Location</label>
-              <input type="text" name="location" required value="${property.location}"
+              <input type="text" name="location" required value="${
+                property.location
+              }"
                 class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
             </div>
           </div>
@@ -727,20 +738,36 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="text-sm text-gray-600">Type</label>
-              <input type="text" name="type" required value="${property.type}"
-                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+              <select name="type" required class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2">
+                ${generateSelectOptions(property.type, [
+                  "شقة",
+                  "أراضي",
+                  "فيلا",
+                  "شاليه",
+                  "عمارة",
+                  "بيت_شخصي",
+                  "مكتب",
+                  "محل",
+                  "مخزن",
+                ])}
+              </select>
+
             </div>
             <div>
               <label class="text-sm text-gray-600">Status</label>
-              <input type="text" name="status" required value="${property.status}"
-                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+              <select name="status" required class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2">
+                ${generateSelectOptions(property.status, ["إيجار", "بيع"])}
+              </select>
+
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="text-sm text-gray-600">Price (EGP)</label>
-              <input type="number" name="price" required value="${property.price}"
+              <input type="number" name="price" required value="${
+                property.price
+              }"
                 class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
             </div>
             <div>
@@ -753,7 +780,9 @@
           <div>
             <label class="text-sm text-gray-600">Description</label>
             <textarea name="description" rows="3" required
-              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2">${property.description}</textarea>
+              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2">${
+                property.description
+              }</textarea>
           </div>
 
           <div class="flex justify-end gap-4 pt-4">
