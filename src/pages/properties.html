@@ -921,18 +921,23 @@
       }
 
       async function loadPropertyImages(propertyId) {
-        const res = await fetch(`/api/Property/GetPropertyById/${propertyId}`);
-        const result = await res.json(); // full response with { data: { ... } }
-        const data = result.data; // extract the actual property
-        const images = data?.images || [];
-        console.log("API result:", result);
-        console.log("Images:", data?.images);
-
+        const res = await fetch(
+          `/api/Property/GetPropertyById/${propertyId}?t=${Date.now()}`
+        );
+        const data = await res.json();
         const container = document.getElementById("propertyImageGallery");
         container.innerHTML = "";
 
+        let images = data?.data?.images || [];
+
+        // Manually append main image if it's not already in the list
+        const mainImage = data?.data?.mainImage;
+        if (mainImage && !images.some((img) => img.id === mainImage.id)) {
+          images.push({ ...mainImage, isMain: true });
+        }
+
         images.forEach((img) => {
-          const isMain = img.id === data.mainImage?.id;
+          const isMain = img.id === mainImage?.id;
 
           const div = document.createElement("div");
           div.className = "relative group";
@@ -947,8 +952,9 @@
           ? '<span class="absolute bottom-1 left-1 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">Main</span>'
           : ""
       }
-      <button onclick="deleteImage(${img.id}, ${propertyId})" 
-        class="absolute top-1 right-1 bg-white/80 text-red-600 hover:text-red-800 rounded-full p-1 hidden group-hover:block">
+      <button onclick="deleteImage(${
+        img.id
+      }, ${propertyId})" class="absolute top-1 right-1 bg-white/80 text-red-600 hover:text-red-800 rounded-full p-1 hidden group-hover:block">
         &times;
       </button>
     `;
