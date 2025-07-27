@@ -195,6 +195,31 @@
       </footer>
     </main>
 
+    <!-- Edit Property Modal -->
+    <div
+      id="editPropertyModal"
+      class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center"
+    >
+      <div
+        id="editModalBox"
+        class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-8 relative animate-fadeIn space-y-6 overflow-y-auto max-h-[90vh]"
+      >
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800">Edit Property</h2>
+          <button
+            onclick="closeEditModal()"
+            class="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+          >
+            &times;
+          </button>
+        </div>
+
+        <form id="editPropertyForm" class="grid grid-cols-1 gap-6">
+          <!-- Form fields will be dynamically inserted with JS -->
+        </form>
+      </div>
+    </div>
+
     <!-- Backdrop -->
     <div
       id="addPropertyModal"
@@ -461,6 +486,10 @@
             </td>
           `;
           propertyTableBody.appendChild(row);
+          // Inside renderProperties loop, after row.innerHTML
+          row
+            .querySelector('button[title="Edit"]')
+            .addEventListener("click", () => openEditModal(property));
         });
       }
 
@@ -669,6 +698,112 @@
             );
           }
         });
+
+      const editModal = document.getElementById("editPropertyModal");
+      const editModalBox = document.getElementById("editModalBox");
+      const editForm = document.getElementById("editPropertyForm");
+
+      function openEditModal(property) {
+        editModal.classList.remove("hidden");
+        editModalBox.classList.remove("animate-fadeOut");
+        editModalBox.classList.add("animate-fadeIn");
+
+        // Build the form with pre-filled values
+        editForm.innerHTML = `
+          <input type="hidden" name="id" value="${property.id}" />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Name</label>
+              <input type="text" name="name" required value="${property.name}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Location</label>
+              <input type="text" name="location" required value="${property.location}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Type</label>
+              <input type="text" name="type" required value="${property.type}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Status</label>
+              <input type="text" name="status" required value="${property.status}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600">Price (EGP)</label>
+              <input type="number" name="price" required value="${property.price}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Area (m²)</label>
+              <input type="number" name="area" required value="${property.area}"
+                class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2" />
+            </div>
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-600">Description</label>
+            <textarea name="description" rows="3" required
+              class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2">${property.description}</textarea>
+          </div>
+
+          <div class="flex justify-end gap-4 pt-4">
+            <button type="button" onclick="closeEditModal()"
+              class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+              Save Changes
+            </button>
+          </div>
+        `;
+      }
+
+      function closeEditModal() {
+        editModalBox.classList.remove("animate-fadeIn");
+        editModalBox.classList.add("animate-fadeOut");
+
+        setTimeout(() => {
+          editModal.classList.add("hidden");
+          editModalBox.classList.remove("animate-fadeOut");
+        }, 200);
+      }
+
+      editForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(editForm);
+
+        const id = formData.get("id");
+
+        try {
+          const response = await fetch(`/api/Property/UpdateProperty/${id}`, {
+            method: "PUT",
+            body: formData, // includes Id, Name, Description, etc.
+          });
+
+          if (response.ok) {
+            alert("Property updated successfully!");
+            closeEditModal();
+            applyFilters(); // refresh table
+          } else {
+            alert("Failed to update property. Please try again.");
+          }
+        } catch (error) {
+          console.error("Error updating property:", error);
+          alert("An error occurred while updating the property.");
+        }
+      });
     </script>
   </body>
 </html>
