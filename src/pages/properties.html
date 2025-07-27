@@ -233,14 +233,20 @@
         </div>
 
         <!-- Tab Content: Edit Data -->
-        <div id="editTabContentData" class="pt-4">
+        <div
+          id="editTabContentData"
+          class="pt-4 transition-all duration-300 ease-in-out"
+        >
           <form id="editPropertyForm" class="grid grid-cols-1 gap-6">
             <!-- JS will populate this -->
           </form>
         </div>
 
         <!-- Tab Content: Edit Images -->
-        <div id="editTabContentImages" class="hidden pt-4 space-y-4">
+        <div
+          id="editTabContentImages"
+          class="hidden pt-4 transition-all duration-300 ease-in-out"
+        >
           <div
             id="propertyImageGallery"
             class="grid grid-cols-2 md:grid-cols-4 gap-4"
@@ -899,25 +905,47 @@
       let currentEditPropertyId = null;
 
       function switchEditTab(tab) {
-        document
-          .getElementById("editTabData")
-          .classList.toggle("text-blue-600", tab === "data");
-        document
-          .getElementById("editTabData")
-          .classList.toggle("border-blue-600", tab === "data");
-        document
-          .getElementById("editTabImages")
-          .classList.toggle("text-blue-600", tab === "images");
-        document
-          .getElementById("editTabImages")
-          .classList.toggle("border-blue-600", tab === "images");
+        const tabDataBtn = document.getElementById("editTabData");
+        const tabImagesBtn = document.getElementById("editTabImages");
+        const tabDataContent = document.getElementById("editTabContentData");
+        const tabImagesContent = document.getElementById(
+          "editTabContentImages"
+        );
 
-        document
-          .getElementById("editTabContentData")
-          .classList.toggle("hidden", tab !== "data");
-        document
-          .getElementById("editTabContentImages")
-          .classList.toggle("hidden", tab !== "images");
+        // Reset tab styles
+        tabDataBtn.classList.remove("text-blue-600", "border-blue-600");
+        tabDataBtn.classList.add("text-gray-500", "border-transparent");
+
+        tabImagesBtn.classList.remove("text-blue-600", "border-blue-600");
+        tabImagesBtn.classList.add("text-gray-500", "border-transparent");
+
+        // Apply active tab styles
+        if (tab === "data") {
+          tabDataBtn.classList.add("text-blue-600", "border-blue-600");
+          tabDataBtn.classList.remove("text-gray-500", "border-transparent");
+
+          // Fade transition
+          tabImagesContent.classList.add("opacity-0");
+          setTimeout(() => {
+            tabImagesContent.classList.add("hidden");
+            tabDataContent.classList.remove("hidden");
+            setTimeout(() => tabDataContent.classList.remove("opacity-0"), 20);
+          }, 150);
+        } else {
+          tabImagesBtn.classList.add("text-blue-600", "border-blue-600");
+          tabImagesBtn.classList.remove("text-gray-500", "border-transparent");
+
+          // Fade transition
+          tabDataContent.classList.add("opacity-0");
+          setTimeout(() => {
+            tabDataContent.classList.add("hidden");
+            tabImagesContent.classList.remove("hidden");
+            setTimeout(
+              () => tabImagesContent.classList.remove("opacity-0"),
+              20
+            );
+          }, 150);
+        }
       }
 
       async function loadPropertyImages(propertyId) {
