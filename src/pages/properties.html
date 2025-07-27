@@ -771,73 +771,50 @@
         .getElementById("sortLocation")
         .addEventListener("change", applyFilters);
 
-      // Add event listener to the form
       document
         .getElementById("addPropertyForm")
         .addEventListener("submit", async function (event) {
           event.preventDefault(); // Prevent default form submission
 
-          // Get form data
           const formData = new FormData();
-          formData.append(
-            "name",
-            document.querySelector('input[name="name"]').value
-          );
-          formData.append(
-            "description",
-            document.querySelector('textarea[name="description"]').value
-          );
-          formData.append(
-            "type",
-            document.querySelector('select[name="type"]').value
-          );
-          formData.append(
-            "status",
-            document.querySelector('select[name="status"]').value
-          );
-          formData.append(
-            "location",
-            document.querySelector('input[name="location"]').value
-          );
-          formData.append(
-            "price",
-            document.querySelector('input[name="price"]').value
-          );
-          formData.append(
-            "area",
-            document.querySelector('input[name="area"]').value
-          );
+          const form = event.target;
 
-          // Handle main image
-          const mainImage = document.querySelector('input[name="mainImage"]')
-            .files[0];
+          formData.append("name", form.name.value);
+          formData.append("description", form.description.value);
+          formData.append("type", form.type.value);
+          formData.append("status", form.status.value);
+          formData.append("location", form.location.value);
+          formData.append("price", form.price.value);
+          formData.append("area", form.area.value);
+
+          // ✅ Use safer scope
+          const mainImage = form.mainImage?.files[0];
           if (mainImage) {
             formData.append("mainImage", mainImage);
           }
 
-          // Handle additional images (if any)
-          const additionalImages = document.querySelector(
-            'input[name="images"]'
-          ).files;
-          for (let i = 0; i < additionalImages.length; i++) {
-            formData.append("images", additionalImages[i]);
+          const additionalImages = form.images?.files;
+          if (additionalImages && additionalImages.length) {
+            for (let i = 0; i < additionalImages.length; i++) {
+              formData.append("images", additionalImages[i]);
+            }
           }
 
-          // Send the data to the API (you mentioned the endpoint, so we are directly using it)
           try {
             const response = await fetch("/api/Property/AddProperty", {
               method: "POST",
               body: formData,
             });
 
-            // Check if the request was successful
             if (response.ok) {
               alert("Property added successfully!");
-              // Optionally, you could reset the form or close the modal
-              document.getElementById("addPropertyForm").reset();
-              closeModal(); // Assuming you want to close the modal after submission
+              form.reset();
+              closeModal();
+              applyFilters(); // Refresh list
             } else {
-              alert("Failed to add property. Please try again.");
+              const err = await response.text();
+              console.error("Add property error:", err);
+              alert("Failed to add property. " + err);
             }
           } catch (error) {
             console.error("Error adding property:", error);
