@@ -698,8 +698,8 @@
           sort: currentSort,
         });
 
-        renderProperties(result.data);
-        totalPages = Math.ceil(result.count / result.pageSize);
+        renderProperties(result);
+        totalPages = Math.ceil(result.count / pageSize);
         renderPagination();
 
         if (!document.getElementById("sortType").dataset.populated) {
