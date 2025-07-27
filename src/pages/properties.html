@@ -214,9 +214,67 @@
           </button>
         </div>
 
-        <form id="editPropertyForm" class="grid grid-cols-1 gap-6">
-          <!-- Form fields will be dynamically inserted with JS -->
-        </form>
+        <!-- Tab Buttons -->
+        <div class="flex gap-2 border-b">
+          <button
+            id="editTabData"
+            onclick="switchEditTab('data')"
+            class="px-4 py-2 border-b-2 font-medium text-blue-600 border-blue-600"
+          >
+            Edit Data
+          </button>
+          <button
+            id="editTabImages"
+            onclick="switchEditTab('images')"
+            class="px-4 py-2 border-b-2 font-medium text-gray-500 border-transparent hover:text-blue-600"
+          >
+            Edit Images
+          </button>
+        </div>
+
+        <!-- Tab Content: Edit Data -->
+        <div id="editTabContentData" class="pt-4">
+          <form id="editPropertyForm" class="grid grid-cols-1 gap-6">
+            <!-- JS will populate this -->
+          </form>
+        </div>
+
+        <!-- Tab Content: Edit Images -->
+        <div id="editTabContentImages" class="hidden pt-4 space-y-4">
+          <div
+            id="propertyImageGallery"
+            class="grid grid-cols-2 md:grid-cols-4 gap-4"
+          ></div>
+
+          <form id="uploadImageForm" class="space-y-3">
+            <input type="hidden" name="propertyId" />
+
+            <label class="block text-sm text-gray-600">Add Image:</label>
+            <input
+              title="Add Image"
+              type="file"
+              name="image"
+              required
+              class="block w-full border border-gray-300 rounded-lg px-4 py-2"
+            />
+
+            <label class="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="mainImage"
+                class="form-checkbox rounded text-blue-600"
+              />
+              Set as Main Image
+            </label>
+
+            <button
+              type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
+              Upload Image
+            </button>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -713,6 +771,10 @@
       }
 
       function openEditModal(property) {
+        currentEditPropertyId = property.id;
+
+        loadPropertyImages(property.id);
+        switchEditTab("data");
         editModal.classList.remove("hidden");
         editModalBox.classList.remove("animate-fadeOut");
         editModalBox.classList.add("animate-fadeIn");
@@ -833,6 +895,99 @@
           alert("An error occurred while updating the property.");
         }
       });
+
+      let currentEditPropertyId = null;
+
+      function switchEditTab(tab) {
+        document
+          .getElementById("editTabData")
+          .classList.toggle("text-blue-600", tab === "data");
+        document
+          .getElementById("editTabData")
+          .classList.toggle("border-blue-600", tab === "data");
+        document
+          .getElementById("editTabImages")
+          .classList.toggle("text-blue-600", tab === "images");
+        document
+          .getElementById("editTabImages")
+          .classList.toggle("border-blue-600", tab === "images");
+
+        document
+          .getElementById("editTabContentData")
+          .classList.toggle("hidden", tab !== "data");
+        document
+          .getElementById("editTabContentImages")
+          .classList.toggle("hidden", tab !== "images");
+      }
+
+      async function loadPropertyImages(propertyId) {
+        const res = await fetch(`/api/Property/GetPropertyById/${propertyId}`);
+        const data = await res.json();
+        const images = data?.images || [];
+        const container = document.getElementById("propertyImageGallery");
+        container.innerHTML = "";
+        images.forEach((img) => {
+          const div = document.createElement("div");
+          div.className = "relative group";
+          div.innerHTML = `
+            <img src="${
+              img.url
+            }" class="rounded-lg w-full h-auto object-cover border-2 ${
+            img.mainImage ? "border-blue-600" : "border-gray-300"
+          }"/>
+            ${
+              img.mainImage
+                ? '<span class="absolute bottom-1 left-1 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">Main</span>'
+                : ""
+            }
+        <button onclick="deleteImage(${
+          img.id
+        }, ${propertyId})" class="absolute top-1 right-1 bg-white/80 text-red-600 hover:text-red-800 rounded-full p-1 hidden group-hover:block">
+          &times;
+        </button>`;
+          container.appendChild(div);
+        });
+      }
+
+      async function deleteImage(imageId, propertyId) {
+        if (!confirm("Delete this image?")) return;
+        const res = await fetch(`/api/Property/DeleteImage/${imageId}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          loadPropertyImages(propertyId);
+        } else {
+          alert("Failed to delete image.");
+        }
+      }
+
+      document
+        .getElementById("uploadImageForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const form = e.target;
+          const formData = new FormData();
+          formData.append("Image", form.image.files[0]);
+          formData.append("MainImage", form.mainImage.checked);
+          try {
+            const res = await fetch(
+              `/api/Property/AddImage/${currentEditPropertyId}`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            if (res.ok) {
+              form.reset();
+              loadPropertyImages(currentEditPropertyId);
+            } else {
+              alert("Failed to upload image.");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Upload failed.");
+          }
+        });
     </script>
   </body>
 </html>
