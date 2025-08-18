@@ -246,16 +246,19 @@
             ? "bg-white cursor-pointer"
             : "bg-blue-50 font-semibold cursor-pointer";
 
+          // Convert to Egypt Standard Time
+          const createdAtDate = new Date(msg.createdAt);
+          const egyptTime = new Date(
+            createdAtDate.toLocaleString("en-US", { timeZone: "Africa/Cairo" })
+          );
+
           tr.innerHTML = `
         <td class="px-6 py-4">
           ${msg.senderName}<br/>
           <small class="text-xs text-gray-500">${msg.senderEmail}</small>
         </td>
         <td class="px-6 py-4 truncate max-w-xs">${msg.body}</td>
-        <td class="px-6 py-4">${new Date(msg.createdAt).toLocaleString(
-          "en-US",
-          { timeZone: "Africa/Cairo" }
-        )}</td>
+        <td class="px-6 py-4">${egyptTime.toLocaleString()}</td> <!-- Display the adjusted time -->
         <td class="px-6 py-4 text-center">
           <button title="Delete"
             class="delete-btn p-2 rounded-full hover:bg-red-100 text-red-600 transition"
