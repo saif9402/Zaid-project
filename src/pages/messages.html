@@ -246,25 +246,21 @@
             ? "bg-white cursor-pointer"
             : "bg-blue-50 font-semibold cursor-pointer";
 
-          // Convert to Egypt Standard Time
+          // Convert the 'createdAt' timestamp to a Date object (in UTC)
           const createdAtDate = new Date(msg.createdAt);
-
-          // Adjust the time to Cairo time zone (Africa/Cairo)
-          const egyptTime = new Date(
-            createdAtDate.toLocaleString("en-US", { timeZone: "Africa/Cairo" })
-          );
-
-          // Format it to a user-friendly date
-          const formattedDate = egyptTime.toLocaleString("en-US", {
-            weekday: "long", // Optional: add the weekday (e.g., Monday)
+          // Using Intl.DateTimeFormat for display:
+          const options = {
+            timeZone: "Africa/Cairo",
             year: "numeric",
-            month: "long",
+            month: "numeric",
             day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          });
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          };
+          const egyptTime = new Intl.DateTimeFormat("en-US", options).format(
+            utcDate
+          );
 
           tr.innerHTML = `
       <td class="px-6 py-4">
@@ -272,7 +268,7 @@
         <small class="text-xs text-gray-500">${msg.senderEmail}</small>
       </td>
       <td class="px-6 py-4 truncate max-w-xs">${msg.body}</td>
-      <td class="px-6 py-4">${formattedDate}</td> <!-- Display the adjusted time -->
+      <td class="px-6 py-4">${egyptTime}</td> <!-- Display the adjusted time -->
       <td class="px-6 py-4 text-center">
         <button title="Delete"
           class="delete-btn p-2 rounded-full hover:bg-red-100 text-red-600 transition"
