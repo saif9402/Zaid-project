@@ -226,7 +226,7 @@
               timeZone: "Africa/Cairo",
               dateStyle: "medium",
               timeStyle: "short",
-              hour12: false,
+              hour12: true,
               timeZoneName: "short",
             }).format(d);
           } catch {
@@ -244,11 +244,10 @@
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
-            hour12: false,
-            timeZoneName: "short", // if this throws on very old engines, we strip it below
+            hour12: true,
+            timeZoneName: "short",
           }).format(d);
         } catch {
-          // Ancient engines without timeZoneName
           return new Intl.DateTimeFormat("en-GB", {
             timeZone: "Africa/Cairo",
             year: "numeric",
@@ -257,7 +256,7 @@
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
-            hour12: false,
+            hour12: true,
           }).format(d);
         }
       };
