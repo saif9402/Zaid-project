@@ -193,6 +193,17 @@
       const pageSize = 10;
       let searchQuery = "";
 
+      const formatCairo = (value) => {
+        const d = value instanceof Date ? value : new Date(value);
+        return new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Africa/Cairo",
+          dateStyle: "medium",
+          timeStyle: "short",
+          hour12: false,
+          timeZoneName: "short", // shows EET/EEST so DST is obvious
+        }).format(d);
+      };
+
       async function fetchMessages() {
         const token = await refreshToken();
 
@@ -246,21 +257,7 @@
             ? "bg-white cursor-pointer"
             : "bg-blue-50 font-semibold cursor-pointer";
 
-          // Convert the 'createdAt' timestamp to a Date object (in UTC)
-          const createdAtDate = new Date(msg.createdAt);
-          // Using Intl.DateTimeFormat for display:
-          const options = {
-            timeZone: "Africa/Cairo",
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          };
-          const egyptTime = new Intl.DateTimeFormat("en-US", options).format(
-            createdAtDate
-          );
+          const egyptTime = formatCairo(msg.createdAt);
 
           tr.innerHTML = `
         <td class="px-6 py-4">
@@ -449,9 +446,10 @@
         document.getElementById("modalEmail").textContent = message.senderEmail;
         document.getElementById("modalPhone").textContent =
           message.phoneNumber || "N/A";
-        document.getElementById("modalDate").textContent = new Date(
+        document.getElementById("modalDate").textContent = formatCairo(
           message.createdAt
-        ).toLocaleString();
+        );
+
         document.getElementById("modalBody").textContent = message.body;
 
         // Call PATCH API if unread
