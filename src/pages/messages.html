@@ -248,8 +248,7 @@
             timeZoneName: "short",
           }).format(d);
         } catch {
-          return new Intl.DateTimeFormat("en-GB", {
-            timeZone: "Africa/Cairo",
+          return new Intl.DateTimeFormat(undefined, {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",

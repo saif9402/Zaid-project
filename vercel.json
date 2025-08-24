@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://zaidrealstate.tryasp.net/api/:path*"
+      "destination": "http://shedwanproperties.runasp.net/api/:path*"
     }
   ]
 }
